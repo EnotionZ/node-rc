@@ -1,7 +1,7 @@
 {
 	"name": "node-rc",
 	"author": "Dominick Pham <dominick@dph.am> (http://dph.am)",
-	"description": "Drive your RC car with node.js"
+	"description": "Drive your RC car with node.js",
 	"keywords": ["rc", "radio", "control", "gpio", "raspberry", "pi"],
 	"version": "0.0.1",
 	"main": "rc",
