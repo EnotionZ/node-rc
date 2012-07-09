@@ -70,4 +70,4 @@ RC.prototype.end = function() {
 };
 
 
-exports.init = function(){ return new RC(); };
+exports.init = function(opts){ return new RC(opts); };
