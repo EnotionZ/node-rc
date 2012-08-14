@@ -1,5 +1,15 @@
 var gpio = require("gpio");
 
+var _open = function(pin, fn) { return gpio.export(pin, {ready: fn}); };
+
+var _close = function(pin, fn) {
+	if(typeof pin === "number") {
+		gpio.unexport(pin, fn);
+	} else if(typeof pin === "object") {
+		pin.unexport(fn);
+	}
+};
+
 var RC = function(opts) {
 
 	opts = opts || {};
@@ -8,24 +18,10 @@ var RC = function(opts) {
 	if(typeof opts.pinBackward !== "number") opts.pinBackward = 22;
 	if(typeof opts.pinForward !== "number") opts.pinForward = 23;
 
-	this.pinRight = this._open(opts.pinRight);
-	this.pinLeft = this._open(opts.pinLeft);
-	this.pinBackward = this._open(opts.pinBackward);
-	this.pinForward = this._open(opts.pinForward);
-};
-
-RC.prototype._open = function(pin) {
-	var p = gpio.export(pin);
-	setTimeout(function() { p.setDirection("out"); }, 100);
-	return p;
-};
-
-RC.prototype._close = function(pin) {
-	if(typeof pin === "number") {
-		gpio.unexport(pin);
-	} else if(typeof pin === "object") {
-		pin.unexport();
-	}
+	this.pinRight = _open(opts.pinRight);
+	this.pinLeft = _open(opts.pinLeft);
+	this.pinBackward = _open(opts.pinBackward);
+	this.pinForward = _open(opts.pinForward, opts.ready);
 };
 
 RC.prototype.turn = function(side) {
@@ -62,11 +58,11 @@ RC.prototype.stop = function() {
 	this.pinBackward.reset();
 };
 
-RC.prototype.end = function() {
-	this._close(this.pinRight);
-	this._close(this.pinLeft);
-	this._close(this.pinBackward);
-	this._close(this.pinForward);
+RC.prototype.end = function(fn) {
+	_close(this.pinRight);
+	_close(this.pinLeft);
+	_close(this.pinBackward);
+	_close(this.pinForward, fn);
 };
 
 
